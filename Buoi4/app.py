@@ -39,6 +39,21 @@ def create_user():
     users.append(new_user)
     return jsonify(new_user), 201
 
+# GET /users: trả về danh sách user
+@app.route('/users', methods=['GET'])
+def get_users():
+    return jsonify(users), 200
+
+# GET /users/<id>: trả về user theo id
+@app.route('/users/<int:user_id>', methods=['GET'])
+@swag_from('swagger_users_get.yml')
+def get_user_by_id(user_id):
+    user = next((u for u in users if u['id'] == user_id), None)
+    if user:
+        return jsonify(user), 200
+    else:
+        return jsonify({"error": "User not found"}), 404
+
 @app.route('/tickets', methods=['POST'])
 @swag_from('swagger_tickets.yml')
 def create_ticket():
@@ -62,6 +77,21 @@ def create_ticket():
     }
     tickets.append(new_ticket)
     return jsonify(new_ticket), 201
+
+# GET /tickets: trả về danh sách ticket
+@app.route('/tickets', methods=['GET'])
+def get_tickets():
+    return jsonify(tickets), 200
+
+# GET /tickets/<id>: trả về ticket theo id
+@app.route('/tickets/<int:ticket_id>', methods=['GET'])
+@swag_from('swagger_tickets_get.yml')
+def get_ticket_by_id(ticket_id):
+    ticket = next((t for t in tickets if t['id'] == ticket_id), None)
+    if ticket:
+        return jsonify(ticket), 200
+    else:
+        return jsonify({"error": "Ticket not found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
