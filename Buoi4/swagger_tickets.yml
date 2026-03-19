@@ -1,0 +1,17 @@
+summary: Tạo ticket mới
+tags:
+  - Tickets
+parameters:
+  - name: user_id
+    in: query
+    required: true
+    schema:
+      type: integer
+  - name: body
+    in: body
+    required: true
+    schema:
+      $ref: "#/definitions/Ticket"
+responses:
+  201:
+    description: Ticket created
