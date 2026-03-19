@@ -1,0 +1,11 @@
+[project]
+name = "oai"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "flagger>=3.1.0",
+    "flask>=3.1.3",
+    "flask-jwt-extended>=4.7.1",
+]
