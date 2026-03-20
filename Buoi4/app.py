@@ -19,6 +19,7 @@ swagger_config = {
     "static_url_path": "/flasgger_static",
     "swagger_ui": True,
     "specs_route": "/docs",
+    "uiversion": 3
 }
 
 swagger = Swagger(app, config=swagger_config, template=template)
@@ -162,6 +163,21 @@ def get_ticket_by_id(ticket_id):
         return jsonify(ticket), 200
     return jsonify({"error": "Ticket not found"}), 404
 
+@app.after_request
+def cleanup_swagger_spec(response):
+    # Kiểm tra nếu request là để lấy file đặc tả JSON của Swagger
+    if request.endpoint == 'apispec_1':
+        import json
+        # Load dữ liệu JSON mà Flasgger vừa tạo ra
+        data = json.loads(response.data)
+        
+        # Nếu tồn tại cả hai version, ta xóa cái 'swagger' (2.0) đi
+        if 'openapi' in data and 'swagger' in data:
+            del data['swagger']
+            
+        # Trả lại dữ liệu đã được làm sạch
+        response.data = json.dumps(data)
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)
