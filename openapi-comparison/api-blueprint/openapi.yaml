@@ -1,0 +1,44 @@
+swagger: "2.0"
+info:
+  title: Library API
+  version: ""
+  description: API quản lý sách đơn giản.
+host: api.library.com
+basePath: /
+schemes:
+  - http
+paths:
+  /books:
+    get:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          examples:
+            application/json:
+              - id: 1
+                title: Clean Code
+          schema:
+            type: array
+            items: {}
+      summary: List All Books
+      operationId: List All Books
+      description: ""
+      tags: []
+      parameters: []
+      produces:
+        - application/json
+      consumes: []
+definitions:
+  Books Collection: {}
+  Book:
+    type: object
+    properties:
+      id:
+        type: number
+        example: 1
+      title:
+        type: string
+        example: Clean Code
+securityDefinitions: {}
+tags: []

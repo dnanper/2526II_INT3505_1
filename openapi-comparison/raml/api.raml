@@ -1,0 +1,15 @@
+#%RAML 1.0
+title: Library API
+version: v1
+types:
+  Book:
+    properties:
+      id: integer
+      title: string
+/books:
+  get:
+    responses:
+      200:
+        body:
+          application/json:
+            type: Book[]

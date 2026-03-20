@@ -1,0 +1,41 @@
+openapi: 3.0.0
+info:
+  title: Library API
+  version: ""
+  description: API quản lý sách đơn giản.
+paths:
+  /books:
+    get:
+      responses:
+        "200":
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {}
+              examples:
+                response:
+                  value:
+                    - id: 1
+                      title: Clean Code
+      summary: List All Books
+      operationId: List All Books
+      description: ""
+      tags: []
+tags: []
+servers:
+  - url: http://api.library.com
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        title:
+          type: string
+          example: Clean Code
+    Books_Collection: {}

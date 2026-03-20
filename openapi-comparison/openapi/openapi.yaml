@@ -1,0 +1,24 @@
+openapi: 3.0.0
+info:
+  title: Library API
+  version: 1.0.0
+paths:
+  /books:
+    get:
+      summary: Lấy danh sách sách
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Book"
+components:
+  schemas:
+    Book:
+      type: object
+      properties:
+        id: { type: integer }
+        title: { type: string }
