@@ -1,0 +1,5 @@
+flask
+Flask-JWT-Extended
+flasgger>=0.9.7.1
+flask-restful
+# flask-cors>=4.0.0
