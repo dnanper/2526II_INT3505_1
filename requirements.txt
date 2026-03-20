@@ -1,3 +1,0 @@
-flask
-Flask-JWT-Extended
-# flask-cors>=4.0.0
