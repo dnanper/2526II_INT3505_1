@@ -45,7 +45,10 @@ class Loan(Base):
     def to_dto(self):
         return {
             "id": self.id,
+            "member_id": self.member_id,
             "book_id": self.book_id,
+            "member_name": self.member.name if self.member else None,
+            "book_title": self.book.title if self.book else None,
             "borrow_date": self.borrow_date.isoformat() if self.borrow_date else None,
             "due_date": self.due_date.isoformat() if self.due_date else None,
             "returned_date": self.returned_date.isoformat()

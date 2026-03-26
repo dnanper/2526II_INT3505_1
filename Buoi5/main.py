@@ -17,8 +17,12 @@ engine = create_engine(DATABASE_URL, echo=False)
 SessionLocal = sessionmaker(bind=engine)
 
 
-def seed_database():
+def initialize_database():
     Base.metadata.create_all(bind=engine)
+
+
+def seed_database():
+    initialize_database()
     session = SessionLocal()
 
     try:
