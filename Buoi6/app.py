@@ -1,6 +1,8 @@
+import os
 from datetime import timedelta
 
 from data import USERS_DB
+from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_jwt_extended import (
     JWTManager,
@@ -14,9 +16,11 @@ from flask_jwt_extended import (
 )
 from utils import role_required, scope_required
 
+load_dotenv()
+
 app = Flask(__name__)
 
-app.config["JWT_SECRET_KEY"] = "mot_chuoi_bi_mat_rat_dai_va_kho_doan_123"
+app.config["JWT_SECRET_KEY"] = os.getenv("FLASK_SECRET_KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
 app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
 
