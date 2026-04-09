@@ -1,0 +1,36 @@
+openapi: 3.0.0
+info:
+  title: Library API
+  version: 1.0.0
+servers:
+- url: /
+paths:
+  /books:
+    get:
+      operationId: books_get
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/Book"
+                type: array
+          description: OK
+      summary: Lấy danh sách sách
+      x-openapi-router-controller: openapi_server.controllers.default_controller
+components:
+  schemas:
+    Book:
+      example:
+        id: 0
+        title: title
+      properties:
+        id:
+          title: id
+          type: integer
+        title:
+          title: title
+          type: string
+      title: Book
+      type: object

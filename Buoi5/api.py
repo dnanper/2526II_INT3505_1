@@ -8,8 +8,9 @@ try:
     from .main import DB_PATH, SessionLocal, initialize_database, seed_database
     from .models import Book, Loan, Member
 except ImportError:
-    from main import DB_PATH, SessionLocal, initialize_database, seed_database
     from models import Book, Loan, Member
+
+    from main import DB_PATH, SessionLocal, initialize_database, seed_database
 
 
 def error_response(message, status_code):
@@ -24,7 +25,11 @@ def parse_pagination(default_limit=10, max_limit=100):
         return None, None, error_response("Invalid pagination parameters", 400)
 
     if limit < 1 or offset < 0:
-        return None, None, error_response("limit must be >= 1 and offset must be >= 0", 400)
+        return (
+            None,
+            None,
+            error_response("limit must be >= 1 and offset must be >= 0", 400),
+        )
 
     return min(limit, max_limit), offset, None
 
@@ -105,7 +110,9 @@ def create_app():
             session.commit()
             session.refresh(book)
             return (
-                jsonify({"message": "Book created successfully", "data": book.to_dto()}),
+                jsonify(
+                    {"message": "Book created successfully", "data": book.to_dto()}
+                ),
                 201,
             )
         except IntegrityError:
@@ -201,7 +208,9 @@ def create_app():
             if not member:
                 return error_response("Member not found", 404)
 
-            total_loans = session.query(Loan).filter(Loan.member_id == member_id).count()
+            total_loans = (
+                session.query(Loan).filter(Loan.member_id == member_id).count()
+            )
             loans = (
                 session.query(Loan)
                 .options(joinedload(Loan.book), joinedload(Loan.member))
@@ -316,7 +325,9 @@ def create_app():
             session.commit()
             session.refresh(loan)
 
-            return jsonify({"message": "Loan returned successfully", "data": loan.to_dto()})
+            return jsonify(
+                {"message": "Loan returned successfully", "data": loan.to_dto()}
+            )
         finally:
             session.close()
 
