@@ -1,0 +1,499 @@
+openapi: 3.0.3
+info:
+  title: Buoi7 Library API
+  version: 1.0.0
+  description: OpenAPI definition for Buoi7 Flask + MongoDB library service.
+
+servers:
+  - url: http://127.0.0.1:5000
+    description: Local development server
+
+tags:
+  - name: System
+  - name: Books
+  - name: Members
+  - name: Loans
+
+paths:
+  /:
+    get:
+      tags: [System]
+      summary: Get API index
+      operationId: getIndex
+      responses:
+        '200':
+          description: API index
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexResponse'
+
+  /api/v1/health:
+    get:
+      tags: [System]
+      summary: Health check
+      operationId: getHealth
+      responses:
+        '200':
+          description: Health status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /api/v1/books:
+    get:
+      tags: [Books]
+      summary: List all books
+      operationId: getBooks
+      responses:
+        '200':
+          description: Book list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookListEnvelope'
+    post:
+      tags: [Books]
+      summary: Create a new book
+      operationId: createBook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookCreateRequest'
+      responses:
+        '201':
+          description: Book created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookCreateResponse'
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Duplicate ISBN
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/books/{book_id}:
+    get:
+      tags: [Books]
+      summary: Get book detail
+      operationId: getBookDetail
+      parameters:
+        - $ref: '#/components/parameters/BookId'
+      responses:
+        '200':
+          description: Book detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BookDetailEnvelope'
+        '404':
+          description: Book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/members:
+    get:
+      tags: [Members]
+      summary: List all members
+      operationId: getMembers
+      responses:
+        '200':
+          description: Member list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberListEnvelope'
+
+  /api/v1/members/{member_id}:
+    get:
+      tags: [Members]
+      summary: Get member detail
+      operationId: getMemberDetail
+      parameters:
+        - $ref: '#/components/parameters/MemberId'
+      responses:
+        '200':
+          description: Member detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MemberDetailEnvelope'
+        '404':
+          description: Member not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/members/{member_id}/loans:
+    get:
+      tags: [Loans]
+      summary: List loans of one member
+      operationId: getMemberLoans
+      parameters:
+        - $ref: '#/components/parameters/MemberId'
+      responses:
+        '200':
+          description: Loans of the member
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanListEnvelope'
+        '404':
+          description: Member not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags: [Loans]
+      summary: Create a loan for a member
+      operationId: createLoan
+      parameters:
+        - $ref: '#/components/parameters/MemberId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanCreateRequest'
+      responses:
+        '201':
+          description: Loan created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanWriteEnvelope'
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Member or book not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Book is already borrowed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/loans/{loan_id}:
+    get:
+      tags: [Loans]
+      summary: Get loan detail
+      operationId: getLoanDetail
+      parameters:
+        - $ref: '#/components/parameters/LoanId'
+      responses:
+        '200':
+          description: Loan detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanDetailEnvelope'
+        '404':
+          description: Loan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/v1/loans/{loan_id}/return:
+    post:
+      tags: [Loans]
+      summary: Return a borrowed book
+      operationId: returnLoan
+      parameters:
+        - $ref: '#/components/parameters/LoanId'
+      responses:
+        '200':
+          description: Loan returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoanWriteEnvelope'
+        '404':
+          description: Loan not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: Loan already returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  parameters:
+    BookId:
+      name: book_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: book_9ce3ce4d5f504cb6888f7fb0072f8a85
+    MemberId:
+      name: member_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: member_2
+    LoanId:
+      name: loan_id
+      in: path
+      required: true
+      schema:
+        type: string
+      example: loan_1234567890abcdef
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+          example: Book not found
+
+    IndexResponse:
+      type: object
+      required: [message, endpoints]
+      properties:
+        message:
+          type: string
+          example: Library API is running
+        endpoints:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            health: /api/v1/health
+            books: /api/v1/books
+            members: /api/v1/members
+            member_loans: /api/v1/members/<member_id>/loans
+            loan_return: /api/v1/loans/<loan_id>/return
+
+    HealthResponse:
+      type: object
+      required: [status, database]
+      properties:
+        status:
+          type: string
+          example: ok
+        database:
+          type: string
+          example: library_buoi7
+
+    MemberSummary:
+      type: object
+      required: [id, name, email]
+      properties:
+        id:
+          type: string
+          example: member_2
+        name:
+          type: string
+          example: Bob Tran
+        email:
+          type: string
+          format: email
+          example: bob@example.com
+
+    MemberListItem:
+      allOf:
+        - $ref: '#/components/schemas/MemberSummary'
+        - type: object
+          required: [active_loans]
+          properties:
+            active_loans:
+              type: integer
+              minimum: 0
+              example: 1
+
+    MemberDetailResponse:
+      $ref: '#/components/schemas/MemberListItem'
+
+    MemberListEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberListItem'
+
+    MemberDetailEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/MemberDetailResponse'
+
+    BookCreateRequest:
+      type: object
+      required: [title, isbn]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: Mongo Book
+        isbn:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: ISBN-9999
+
+    BookListItem:
+      type: object
+      required: [id, title, isbn, is_available]
+      properties:
+        id:
+          type: string
+          example: book_9ce3ce4d5f504cb6888f7fb0072f8a85
+        title:
+          type: string
+          example: Mongo Book
+        isbn:
+          type: string
+          example: ISBN-9999
+        is_available:
+          type: boolean
+          example: true
+
+    BookDetailResponse:
+      allOf:
+        - $ref: '#/components/schemas/BookListItem'
+        - type: object
+          properties:
+            borrowed_by:
+              allOf:
+                - $ref: '#/components/schemas/MemberSummary'
+              nullable: true
+
+    BookListEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/BookListItem'
+
+    BookDetailEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/BookDetailResponse'
+
+    BookCreateResponse:
+      type: object
+      required: [message, data]
+      properties:
+        message:
+          type: string
+          example: Book created successfully
+        data:
+          $ref: '#/components/schemas/BookListItem'
+
+    LoanCreateRequest:
+      type: object
+      required: [book_id]
+      properties:
+        book_id:
+          type: string
+          example: book_9ce3ce4d5f504cb6888f7fb0072f8a85
+
+    LoanResponse:
+      type: object
+      required:
+        - id
+        - member_id
+        - book_id
+        - borrow_date
+        - due_date
+        - status
+      properties:
+        id:
+          type: string
+          example: loan_1234567890abcdef
+        member_id:
+          type: string
+          example: member_2
+        book_id:
+          type: string
+          example: book_9ce3ce4d5f504cb6888f7fb0072f8a85
+        member_name:
+          type: string
+          nullable: true
+          example: Bob Tran
+        book_title:
+          type: string
+          nullable: true
+          example: Mongo Book
+        borrow_date:
+          type: string
+          format: date
+          example: 2026-04-09
+        due_date:
+          type: string
+          format: date
+          example: 2026-04-23
+        returned_date:
+          type: string
+          format: date
+          nullable: true
+          example: 2026-04-10
+        status:
+          type: string
+          enum: [BORROWED, RETURNED]
+          example: BORROWED
+
+    LoanListEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoanResponse'
+
+    LoanDetailEnvelope:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: '#/components/schemas/LoanResponse'
+
+    LoanWriteEnvelope:
+      type: object
+      required: [message, data]
+      properties:
+        message:
+          type: string
+          example: Loan created successfully
+        data:
+          $ref: '#/components/schemas/LoanResponse'
