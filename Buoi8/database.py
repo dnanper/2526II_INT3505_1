@@ -48,3 +48,4 @@ def init_db(db_path=DB_PATH):
 
     session.commit()
     session.close()
+    engine.dispose()
