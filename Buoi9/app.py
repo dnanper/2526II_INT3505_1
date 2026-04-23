@@ -7,8 +7,8 @@ Demonstrates URL-based versioning with v1 (deprecated) and v2 (current) payment 
 
 from flask import Flask
 from v1_endpoints import v1_bp
-from v2_endpoints import v2_bp
-from docs_endpoints import docs_bp
+from test.v2_endpoints import v2_bp
+from test.docs_endpoints import docs_bp
 
 
 def create_app():
@@ -26,25 +26,25 @@ def create_app():
     @app.errorhandler(404)
     def not_found(error):
         return {
-            'error': 'Not Found',
-            'message': 'The requested endpoint does not exist',
-            'version': 'unknown'
+            "error": "Not Found",
+            "message": "The requested endpoint does not exist",
+            "version": "unknown",
         }, 404
 
     @app.errorhandler(405)
     def method_not_allowed(error):
         return {
-            'error': 'Method Not Allowed',
-            'message': 'The HTTP method is not supported for this endpoint',
-            'version': 'unknown'
+            "error": "Method Not Allowed",
+            "message": "The HTTP method is not supported for this endpoint",
+            "version": "unknown",
         }, 405
 
     @app.errorhandler(500)
     def internal_error(error):
         return {
-            'error': 'Internal Server Error',
-            'message': 'An unexpected error occurred',
-            'version': 'unknown'
+            "error": "Internal Server Error",
+            "message": "An unexpected error occurred",
+            "version": "unknown",
         }, 500
 
     return app
@@ -54,9 +54,9 @@ def print_startup_info():
     """
     Print helpful information when the app starts
     """
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("API Versioning Demo - Payment Service")
-    print("="*70)
+    print("=" * 70)
     print("\n📋 Endpoints:")
     print("\n  v1 (Deprecated - will sunset in 90 days):")
     print("    POST   /api/v1/payments       - Create payment (VND only)")
@@ -70,16 +70,16 @@ def print_startup_info():
     print("\n  Documentation:")
     print("    GET    /docs/migration/v1-to-v2 - Migration guide")
     print("    GET    /docs/changelog          - Version history")
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("\n⚠️  Note:")
     print("  - v1 endpoints include deprecation headers")
     print("  - Sunset date: 90 days from now")
     print("  - v1 requires no currency field (defaults to VND)")
     print("  - v2 REQUIRES currency field (breaking change)")
-    print("="*70 + "\n")
+    print("=" * 70 + "\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app = create_app()
     print_startup_info()
     app.run(debug=True, port=5000)
