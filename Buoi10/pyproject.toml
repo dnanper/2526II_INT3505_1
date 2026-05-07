@@ -4,4 +4,12 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = []
+dependencies = [
+    "flask>=2.1.1",
+    "flask-limiter>=4.1.1",
+    "gunicorn>=26.0.0",
+    "prometheus-flask-exporter>=0.23.2",
+    "pybreaker>=1.4.1",
+    "redis>=7.4.0",
+    "requests>=2.33.1",
+]
